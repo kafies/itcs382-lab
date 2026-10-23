@@ -2,6 +2,7 @@ package parcelpoint;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class ParcelService {
         for (Locker locker : lockers) {
             if (locker.isFree() && locker.getSize().compareTo(parcel.getSize()) >= 0) {
                 locker.setParcel(parcel);
-                parcel.status = "STORED";
+                parcel.markStored();
                 parcels.add(parcel);
                 System.out.println("SMS to " + parcel.getStudentId() + ": parcel "
                         + parcel.getCode() + " is in locker " + locker.getNumber());
@@ -39,7 +40,7 @@ public class ParcelService {
             Parcel parcel = locker.getParcel();
             if (parcel != null && parcel.getCode().equals(code)) {
                 locker.setParcel(null);
-                parcel.status = "PICKED_UP";
+                parcel.markPickedUp();
                 saveToFile();
                 return fee(parcel, days);
             }
@@ -62,8 +63,8 @@ public class ParcelService {
     public void printParcels(boolean forStaff) {
         for (Parcel parcel : parcels) {
             if (forStaff) {
-                System.out.println(parcel.getCode() + " " + parcel.getStudentId() + " " + parcel.status);
-            } else if (parcel.status.equals("STORED")) {
+                System.out.println(parcel.getCode() + " " + parcel.getStudentId() + " " + parcel.getStatus());
+            } else if (parcel.getStatus().equals("STORED")) {
                 System.out.println(parcel.getCode() + " is waiting");
             }
         }
