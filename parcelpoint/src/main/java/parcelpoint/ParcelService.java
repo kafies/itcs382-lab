@@ -71,13 +71,13 @@ public class ParcelService {
         }
     }
 
-    private void saveToFile() {
-        try {
-            FileWriter writer = new FileWriter("parcels.csv");
-            for (Parcel parcel : parcels) {
-                writer.write(parcel.getCode() + "," + parcel.status + "\n");
-            }
-        } catch (IOException e) {
-        }
-    }
+   private void saveToFile() {
+       try (FileWriter writer = new FileWriter("parcels.csv")) {
+           for (Parcel parcel : parcels) {
+               writer.write(parcel.getCode() + "," + parcel.getStatus() + "\n");
+           }
+       } catch (IOException e) {
+           throw new UncheckedIOException("Could not save parcels.csv", e);
+       }
+   }
 }
